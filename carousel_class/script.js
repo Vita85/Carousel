@@ -1,12 +1,12 @@
 
   class Carousel {
   constructor(options) {
-    // Створюємо основний wrapper
+   
     this.wrapper = document.createElement("div");
     this.wrapper.className = "wrapper";
     document.body.appendChild(this.wrapper);
 
-    // Конструктор
+
     this.images = [];
     this.indicators = [];
     this.counter = 0;
@@ -14,9 +14,7 @@
     this.slideInterval = null;
     this.intervalTime = options.intervalTime || 3000;
     this.showIndicators = options.showIndicators !== false;
-    this.numImages = options.numImages || 4;
-
-    this.init();
+    this.numberOfImages = options.numberOfImages || 4;
   }
 
   init() {
@@ -30,44 +28,42 @@
     this.carouselContainer.className = "carousel-container";
     this.wrapper.appendChild(this.carouselContainer);
 
-    // Контейнер для зображень
+  
     this.imageContainer = document.createElement("div");
     this.imageContainer.className = "carousel-images";
     this.carouselContainer.appendChild(this.imageContainer);
 
-    // Контейнер для кнопок
-    this.controls = document.createElement("div");
-    this.controls.className = "controls";
-    this.carouselContainer.appendChild(this.controls);
 
-    // Кнопка попередній
+    this.controlsContainer = document.createElement("div");
+    this.controlsContainer.className = "controls";
+    this.carouselContainer.appendChild(this.controlsContainer);
+
+  
     this.prevButton = document.createElement("button");
     this.prevButton.className = "btn";
 
-    // Додаємо зображення в кнопку
+  
     const prevImg = document.createElement("img");
-    prevImg.src = "./icons/icons8-left-60.png"; // Заміни на правильний шлях до іконки
+    prevImg.src = "./icons/icons8-left-60.png";
     prevImg.alt = "Previous";
     this.prevButton.appendChild(prevImg);
-    this.controls.appendChild(this.prevButton);
+    this.controlsContainer.appendChild(this.prevButton);
 
-    // Кнопка наступний
+
     this.nextButton = document.createElement("button");
     this.nextButton.className = "btn";
 
-    // Додаємо зображення в кнопку
+
     const nextImg = document.createElement("img");
-    nextImg.src = "./icons/icons8-right-60.png"; // Заміни на правильний шлях до іконки
+    nextImg.src = "./icons/icons8-right-60.png"; 
     nextImg.alt = "Next";
     this.nextButton.appendChild(nextImg);
-    this.controls.appendChild(this.nextButton);
+    this.controlsContainer.appendChild(this.nextButton);
 
-    // Створюємо div для індикаторів
     this.indicatorsContainer = document.createElement("div");
     this.indicatorsContainer.className = "carousel-indicators";
     this.carouselContainer.appendChild(this.indicatorsContainer);
 
-    // Створюємо кнопки play і pause
     this.playButton = document.createElement("button");
     this.playButton.className = "play-slide";
     this.playButton.textContent = "Play";
@@ -81,7 +77,7 @@
 
   loadImages() {
     let countImages = 0;
-    for (let i = 0; i < this.numImages; i++) {
+    for (let i = 0; i < this.numberOfImages; i++) {
       const img = document.createElement("img");
       img.src = `https://picsum.photos/800/600?random=${i}`;
       img.className = "carousel-img";
@@ -89,7 +85,7 @@
 
       img.onload = () => {
         countImages++;
-        if (countImages === this.numImages) {
+        if (countImages === this.numberOfImages) {
           this.step = this.images[0].clientWidth;
           this.updateSlider();
           if (this.showIndicators) this.createIndicators();
@@ -102,7 +98,7 @@
   }
 
   createIndicators() {
-    for (let i = 0; i < this.numImages; i++) {
+    for (let i = 0; i < this.numberOfImages; i++) {
       const indicator = document.createElement("span");
       indicator.className = "indicator";
       indicator.addEventListener("click", () => this.goToSlide(i));
@@ -123,13 +119,13 @@
   }
 
   showNextSlide() {
-    this.counter = (this.counter + 1) % this.numImages;
+    this.counter = (this.counter + 1) % this.numberOfImages;
     this.updateSlider();
     this.updateIndicators();
   }
 
   showPrevSlide() {
-    this.counter = (this.counter - 1 + this.numImages) % this.numImages;
+    this.counter = (this.counter - 1 + this.numberOfImages) % this.numberOfImages;
     this.updateSlider();
     this.updateIndicators();
   }
@@ -193,11 +189,12 @@
       positionTouch(event.clientX);
     });
 
-    // Авто припинення презентації коли миша знаходиться на контейнері
     this.imageContainer.addEventListener("mouseover", () => this.pauseSlide());
+
     this.imageContainer.addEventListener("mouseout", () => this.startSlide());
   }
   }
 
 
-  new Carousel({ numImages: 5, intervalTime: 4000, showIndicators: true });
+  const carousel = new Carousel({ numberOfImages: 5, intervalTime: 4000, showIndicators: true });
+  carousel.init();
