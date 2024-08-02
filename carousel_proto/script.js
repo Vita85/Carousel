@@ -1,10 +1,10 @@
 function Carousel(options) {
-  // створюю основний wrapper
+  // create wrapper
   this.wrapper = document.createElement("div");
   this.wrapper.className = "wrapper";
   document.body.appendChild(this.wrapper);
 
-  // конструктор
+  // constructor
   this.images = [];
   this.indicators = [];
   this.counter = 0;
@@ -12,62 +12,60 @@ function Carousel(options) {
   this.slideInterval = null;
   this.intervalTime = options.intervalTime || 3000;
   this.showIndicators = options.showIndicators !== false;
-  this.numImages = options.numImages || 4;
-
-  this.init();
+  this.numberOfImages = options.numberOfImages || 4;
 }
 
-// створюю метод і передаю в об'єкт функції
+// create method init with functions;
 Carousel.prototype.init = function () {
   this.createElements();
   this.loadImages();
   this.setupEventListeners();
 };
 
-// створюю елементи
+// create elements
 Carousel.prototype.createElements = function () {
   this.carouselContainer = document.createElement("div");
   this.carouselContainer.className = "carousel-container";
   this.wrapper.appendChild(this.carouselContainer);
 
-  // контейнер для зображень
+  //create container for images
   this.imageContainer = document.createElement("div");
   this.imageContainer.className = "carousel-images";
   this.carouselContainer.appendChild(this.imageContainer);
 
-  // контейнер для кнопок
-  this.controls = document.createElement("div");
-  this.controls.className = "controls";
-  this.carouselContainer.appendChild(this.controls);
+  //create container for buttons
+  this.controlsContainer = document.createElement("div");
+  this.controlsContainer.className = "controls";
+  this.carouselContainer.appendChild(this.controlsContainer);
 
-  // кнопка попередній
+  //create prev button
   this.prevButton = document.createElement("button");
   this.prevButton.className = "btn";
 
-  //додаю зображення в кнопку
+  //img for button
   let prevImg = document.createElement("img");
   prevImg.src = "./icons/icons8-left-60.png";
 
   this.prevButton.appendChild(prevImg);
-  this.controls.appendChild(this.prevButton);
+  this.controlsContainer.appendChild(this.prevButton);
 
-  // кнопка наступний
+  //create next button
   this.nextButton = document.createElement("button");
   this.nextButton.className = "btn";
 
-  //додаю зображення в кнопку
- let nextImg = document.createElement("img");
+  //img for button
+  let nextImg = document.createElement("img");
   nextImg.src = "./icons/icons8-right-60.png";
 
   this.nextButton.appendChild(nextImg);
-  this.controls.appendChild(this.nextButton);
+  this.controlsContainer.appendChild(this.nextButton);
 
-  // створюю div для індикаторів
+  //create div for indicators
   this.indicatorsContainer = document.createElement("div");
   this.indicatorsContainer.className = "carousel-indicators";
   this.carouselContainer.appendChild(this.indicatorsContainer);
 
-  // створюю кнопки play і pause
+  //create buttons play / pause
   this.playButton = document.createElement("button");
   this.playButton.className = "play-slide";
   this.playButton.textContent = "Play";
@@ -79,25 +77,25 @@ Carousel.prototype.createElements = function () {
   this.wrapper.appendChild(this.pauseButton);
 };
 
-//=========== функціонал
+//==========functions
 
-// створюю і завантажую зображення
+//create and load images
 Carousel.prototype.loadImages = function () {
-  let countImages = 0; //початкова кількість зобр.
-  for (let i = 0; i < this.numImages; i++) {
+  let countImages = 0;
+  for (let i = 0; i < this.numberOfImages; i++) {
     const img = document.createElement("img");
     img.src = `https://picsum.photos/800/600?random=${i}`;
     img.className = "carousel-img";
     this.images.push(img);
 
-    // якщо зобр. точно завантажилися img.onload
+    // img.onload
     img.onload = () => {
       countImages++;
-      if (countImages === this.numImages) {
+      if (countImages === this.numberOfImages) {
         this.step = this.images[0].clientWidth;
-        this.updateSlider(); //оновлюю
+        this.updateSlider();
         if (this.showIndicators) this.createIndicators(); //
-        this.startSlide(); //автоматичне переключення слайдера при завантаженні сторінки
+        this.startSlide();
       }
     };
 
@@ -105,9 +103,9 @@ Carousel.prototype.loadImages = function () {
   }
 };
 
-// створюю індикатори
+// create indicators
 Carousel.prototype.createIndicators = function () {
-  for (let i = 0; i < this.numImages; i++) {
+  for (let i = 0; i < this.numberOfImages; i++) {
     const indicator = document.createElement("span");
     indicator.className = "indicator";
     indicator.addEventListener("click", () => this.goToSlide(i));
@@ -116,15 +114,15 @@ Carousel.prototype.createIndicators = function () {
   }
 };
 
-//зміщую зображення
+//translate image
 Carousel.prototype.updateSlider = function () {
   // if (this.images.length === 0) return;
   this.imageContainer.style.transform = `translateX(${
     -this.step * this.counter
   }px)`;
 };
- 
-// оновлюю індикатори додаючи клас, коли його index == номеру зобр.
+
+//update indicators when index = counter
 Carousel.prototype.updateIndicators = function () {
   this.indicators.forEach((indicator, index) => {
     indicator.classList.toggle("active", index === this.counter);
@@ -132,13 +130,13 @@ Carousel.prototype.updateIndicators = function () {
 };
 
 Carousel.prototype.showNextSlide = function () {
-  this.counter = (this.counter + 1) % this.numImages;
+  this.counter = (this.counter + 1) % this.numberOfImages;
   this.updateSlider();
   this.updateIndicators();
 };
 
 Carousel.prototype.showPrevSlide = function () {
-  this.counter = (this.counter - 1 + this.numImages) % this.numImages;
+  this.counter = (this.counter - 1 + this.numberOfImages) % this.numberOfImages;
   this.updateSlider();
   this.updateIndicators();
 };
@@ -180,8 +178,7 @@ Carousel.prototype.setupEventListeners = function () {
     }
   });
 
-
-  // відслідковую позиції жести
+  // Touches
   let startPosition = 0;
   const positionTouch = (endPosition) => {
     if (endPosition < startPosition) {
@@ -191,7 +188,7 @@ Carousel.prototype.setupEventListeners = function () {
     }
   };
 
-  // відслідковую позицію дотику
+  //touch
   this.imageContainer.addEventListener("touchstart", (event) => {
     startPosition = event.touches[0].clientX;
   });
@@ -200,7 +197,7 @@ Carousel.prototype.setupEventListeners = function () {
     positionTouch(event.changedTouches[0].clientX);
   });
 
-  // відслідковую позицію миші
+  //mouse
   this.imageContainer.addEventListener("mousedown", (event) => {
     startPosition = event.clientX;
   });
@@ -209,12 +206,17 @@ Carousel.prototype.setupEventListeners = function () {
     positionTouch(event.clientX);
   });
 
-  // авто прирпинення презентації коли миша знаходиться на контейнері
+  // mouseover
   this.imageContainer.addEventListener("mouseover", () => this.pauseSlide());
 
   this.imageContainer.addEventListener("mouseout", () => this.startSlide());
 };
 
-// Ініціалізація слайдера після завантаження HTML
+//initialization carousel
 
-  new Carousel({ numImages: 5, intervalTime: 4000, showIndicators: true });
+const carousel = new Carousel({
+  numberOfImages: 5,
+  intervalTime: 4000,
+  showIndicators: true,
+});
+carousel.init();
